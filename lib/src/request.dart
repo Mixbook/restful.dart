@@ -2,6 +2,7 @@ library restful.request;
 
 import 'dart:async';
 import 'dart:html';
+import 'package:restful/src/formats.dart';
 import 'package:restful/src/uri_helper.dart';
 
 typedef HttpRequest RequestFactory();
@@ -13,29 +14,39 @@ class Request {
   
   final String url;
   final String method;
-  final String contentType;
+  final Format format;
   
-  Request(this.method, this.url, this.contentType);
+  Request(this.method, this.url, this.format);
   
-  Request.get(this.url, this.contentType) : method = 'get';
+  Request.get(this.url, this.format) : method = 'get';
   
-  Request.post(this.url, this.contentType) : method = 'post';
+  Request.post(this.url, this.format) : method = 'post';
   
-  Request.put(this.url, this.contentType) : method = 'put';
+  Request.put(this.url, this.format) : method = 'put';
   
-  Request.delete(this.url, this.contentType) : method = 'delete';
+  Request.delete(this.url, this.format) : method = 'delete';
   
   Future send([Object data]) {
     var completer = new Completer();
     
     var request = httpRequestFactory();
-    request.setRequestHeader('Content-Type', contentType);
     request.open(method, url);
-    request.onLoad.listen((event) => completer.complete(request.responseText));
+    
+    if (method != 'get') {
+      request.setRequestHeader('Content-Type', format.contentType);
+    }
+    
+    request.onLoad.listen((event) {
+      if ((request.status >= 200 && request.status < 300) || request.status == 0 || request.status == 304) {
+        completer.complete(request.responseText);
+      } else {
+        completer.completeError(request.responseText);
+      }
+    });
     request.onError.listen((event) => completer.completeError(request.responseText));
     
     if (data != null) {
-      request.send(data);
+      request.send(format.serialize(data));
     } else {
       request.send();
     }

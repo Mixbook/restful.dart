@@ -13,14 +13,12 @@ class UriHelper extends Uri {
     );
   }
   
-  UriHelper append(String path) {
-    return new UriHelper(
-        scheme: scheme, host: host, port: port, pathSegments: new List.from(pathSegments)..add(path), 
-        queryParams: queryParameters, fragment: fragment
-    );
+  UriHelper append(Object path) {
+    return appendEach([path]);
   }
   
-  UriHelper appendEach(Iterable<String> paths) {
+  UriHelper appendEach(Iterable paths) {
+    paths = paths.map((p) => p.toString());
     return new UriHelper(
         scheme: scheme, host: host, port: port, pathSegments: new List.from(pathSegments)..addAll(paths), 
         queryParams: queryParameters, fragment: fragment

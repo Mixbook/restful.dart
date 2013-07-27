@@ -1,41 +1,30 @@
-library restful.tests.rest_resource;
+library restful.tests.resource;
 
 import 'dart:async';
 import 'dart:html';
 import 'dart:json' as json;
 import 'package:unittest/unittest.dart';
 import 'package:unittest/mock.dart';
-import 'package:restful/src/rest_resource.dart';
+import 'package:restful/src/resource.dart';
 import 'package:restful/src/formats.dart';
 import 'package:restful/src/request.dart';
+import 'request_mock.dart';
 
-void testRestResource() {
+void testResource() {
   group("RestResource", () {
     
-    RestResource resource;
+    Resource resource;
     HttpRequestMock request;
     
     setUp(() {
-      resource = new RestResource(url: "http://www.example.com/users", format: JSON);
+      resource = new Resource(url: "http://www.example.com/users", format: JSON);
       
       request = new HttpRequestMock();
-      request.when(callsTo('send')).alwaysCall(([a]) {
-        new Timer(new Duration(milliseconds: request.delay), () {
-          request.onLoadController.add(true);
-        });
-      });
-      
       httpRequestFactory = () => request;
     });
     
-    test("should set header's Content-Type", () {
-      resource.find(1).then(expectAsync1((json) {
-        request.getLogs(callsTo('setRequestHeader', 'Content-Type', JSON.contentType)).verify(happenedOnce);
-      }));
-    });
-    
     test("should append subresource names", () {
-      var subresource = resource.subresourceId(1, 'posts');
+      var subresource = resource.nest(1, 'posts');
       expect(subresource.url, equals("http://www.example.com/users/1/posts"));
     });
 
@@ -131,9 +120,9 @@ void testRestResource() {
       });
     });
     
-    group("query without ID", () {
+    group("query", () {
       test("should send 'GET' to correct URL", () {
-        resource.query(params: {'param1': 'value1'}).then(expectAsync1((json) {
+        resource.query({'param1': 'value1'}).then(expectAsync1((json) {
           request.getLogs(
               callsTo('open', 'get', 'http://www.example.com/users?param1=value1')
           ).verify(happenedOnce);
@@ -144,26 +133,7 @@ void testRestResource() {
         var response = [{'id': 1, 'name': 'Jimmy Page'}, {'id': 2, 'name': 'David Gilmour'}];
         request.responseText = json.stringify(response);
         
-        resource.query(params: {'param1': 'value1'}).then(expectAsync1((json) {
-          expect(json, equals(response));
-        }));
-      });
-    });
-    
-    group("query with ID", () {
-      test("should send 'GET' to correct URL", () {
-        resource.query(id: 1, params: {'param1': 'value1'}).then(expectAsync1((json) {
-          request.getLogs(
-              callsTo('open', 'get', 'http://www.example.com/users/1?param1=value1')
-          ).verify(happenedOnce);
-        }));
-      });
-      
-      test("should deserialize response", () {
-        var response = {'id': 1, 'name': 'Jimmy Page'};
-        request.responseText = json.stringify(response);
-        
-        resource.query(id: 1, params: {'param1': 'value1'}).then(expectAsync1((json) {
+        resource.query({'param1': 'value1'}).then(expectAsync1((json) {
           expect(json, equals(response));
         }));
       });
@@ -178,7 +148,7 @@ void testRestResource() {
       
       test("should serialize request data", () {
         var data = {'name': 'David Gilmour'};
-        resource.create(data).then(expectAsync1((json) {
+        resource.save(1, data).then(expectAsync1((json) {
           request.getLogs(callsTo('send', resource.format.serialize(data))).verify(happenedOnce);
         }));
       });
@@ -187,25 +157,11 @@ void testRestResource() {
         var response = {'id': 1, 'name': 'Jimmy Page'};
         request.responseText = json.stringify(response);
         
-        resource.query(id: 1, params: {'param1': 'value1'}).then(expectAsync1((json) {
+        resource.save(1, {'param1': 'value1'}).then(expectAsync1((json) {
           expect(json, equals(response));
         }));
       });
     });
     
   });
-}
-
-class HttpRequestMock extends Mock implements HttpRequest {
-  
-  var responseText = '';
-  
-  int delay = 25;
-  
-  var onLoadController = new StreamController.broadcast();
-  Stream get onLoad => onLoadController.stream;
-  
-  var onErrorController = new StreamController.broadcast();
-  Stream get onError=> onErrorController.stream;
-  
 }
