@@ -1,4 +1,3 @@
-restful.dart
-============
+# restful.dart
 
-A Dart library for connecting to restful services.
+A Dart package for connecting to restful web services.
