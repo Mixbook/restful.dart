@@ -1,8 +1,9 @@
-library restful.request;
+library restful.request_helper;
 
 import 'dart:async';
 import 'dart:html';
 import 'package:restful/src/formats.dart';
+import 'package:logging/logging.dart';
 
 typedef HttpRequest RequestFactory();
 
@@ -38,6 +39,8 @@ class RequestHelper {
     request.onLoad.listen((event) {
       if ((request.status >= 200 && request.status < 300) || request.status == 0) {
         completer.complete(request);
+      } else {
+        _logger.warning("Unhandled HTTP status code ${request.status} for $url");
       }
     });
     request.onError.listen((event) => completer.completeError(request));
@@ -52,3 +55,5 @@ class RequestHelper {
   }
   
 }
+
+Logger _logger = new Logger("restful.request_helper");
