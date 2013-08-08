@@ -1,7 +1,8 @@
 library restful.resource;
 
 import 'dart:async';
-import 'package:restful/src/request.dart';
+import 'dart:html';
+import 'package:restful/src/request_helper.dart';
 import 'package:restful/src/formats.dart';
 import 'package:restful/src/uri_helper.dart';
 
@@ -54,11 +55,11 @@ class Resource {
   }
   
   Future request(String method, String url, [Object data]) {
-    var request = new Request(method, url, format);
+    var request = new RequestHelper(method, url, format);
     return (data != null ? request.send(data) : request.send()).then(_deserialize);
   }
   
-  Object _deserialize(String response) {
-    return format.deserialize(response);
+  Object _deserialize(HttpRequest request) {
+    return format.deserialize(request.responseText);
   }
 }

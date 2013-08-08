@@ -7,7 +7,7 @@ import 'package:unittest/unittest.dart';
 import 'package:unittest/mock.dart';
 import 'package:restful/src/resource.dart';
 import 'package:restful/src/formats.dart';
-import 'package:restful/src/request.dart';
+import 'package:restful/src/request_helper.dart';
 import 'request_mock.dart';
 
 void testResource() {

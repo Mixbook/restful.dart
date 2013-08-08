@@ -11,7 +11,7 @@ class RestApi {
   RestApi({this.apiUri, this.format});
   
   Resource resource(String name) {
-    var uri = new UriHelper.from(apiUri).append(name).toString();
+    var uri = new UriHelper.from(apiUri).appendEach(name.split("/")).toString();
     return new Resource(url: uri, format: format);
   }
 }
