@@ -30,11 +30,8 @@ class Resource {
     return request('delete', uri);
   }
   
-  Future find(Object id, [Map<String, Object> params]) {
-    var uri = _uri
-        .append(id.toString())
-        .replaceParams(params)
-        .toString();
+  Future find(Object id) {
+    var uri = _uri.append(id.toString()).toString();
     return request('get', uri);
   }
   
