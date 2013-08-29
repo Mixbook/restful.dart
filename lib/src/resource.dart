@@ -34,6 +34,11 @@ class Resource {
     var uri = _uri.append(id.toString()).toString();
     return request('get', uri);
   }
+
+  Future findWithOptions(Object id, Map<String, Object> options) {
+    var uri = _uri.append(id.toString()).replaceParams(options == null ? {} : options).toString();
+    return request("get", uri);
+  }
   
   Future findAll() {
     return request('get', url);
