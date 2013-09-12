@@ -1,8 +1,8 @@
 library restful.formats;
 
-import 'dart:json' as json;
+import 'dart:convert';
 
 part 'formats/format.dart';
 part 'formats/json_format.dart';
 
-final JSON = new JsonFormat();
+final JSON_FORMAT = new JsonFormat();

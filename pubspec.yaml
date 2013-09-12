@@ -1,6 +1,6 @@
 name: restful
 version: 0.1.0
-authors: 
+authors:
 - Dan Schultz <dan@mixbook.com>
 - Anton Astashov <anton@mixbook.com>
 description: A package for working with restful web services.
@@ -11,4 +11,4 @@ dev_dependencies:
   browser: any
   js: any
   logging_handlers: '>=0.5.0'
-  unittest: 0.5.5
+  unittest: any
