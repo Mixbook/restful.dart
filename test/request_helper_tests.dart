@@ -34,5 +34,15 @@ void testRequests() {
         httpRequest.getLogs(callsTo('setRequestHeader', 'Content-Type', JSON_FORMAT.contentType)).verify(neverHappened);
       }));
     });
+
+    group("with an error status", () {
+      setUp(() {
+        httpRequest.status = 500;
+      });
+
+      test("should fail with completeError", () {
+        expect(new RequestHelper.get('url', JSON_FORMAT).send(), throws);
+      });
+    });
   });
 }
