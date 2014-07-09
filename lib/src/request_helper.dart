@@ -2,8 +2,9 @@ library restful.request_helper;
 
 import 'dart:async';
 import 'dart:html';
-import 'package:restful/src/formats.dart';
 import 'package:logging/logging.dart';
+import 'package:restful/src/formats.dart';
+import 'package:restful/src/request_fault.dart';
 
 typedef HttpRequest RequestFactory();
 
@@ -30,6 +31,7 @@ class RequestHelper {
     var completer = new Completer();
 
     var request = httpRequestFactory();
+    var serializedData = data != null ? format.serialize(data) : null;
     request.open(method, url);
 
     if (method != 'get') {
@@ -41,13 +43,13 @@ class RequestHelper {
         completer.complete(request);
       } else {
         _logger.warning("Unhandled HTTP status code ${request.status} for $url");
-        completer.completeError(request);
+        completer.completeError(new RequestFault(method, url, serializedData, request));
       }
     });
-    request.onError.listen((event) => completer.completeError(request));
+    request.onError.listen((event) => completer.completeError(new RequestFault(method, url, serializedData, request)));
 
-    if (data != null) {
-      request.send(format.serialize(data));
+    if (serializedData != null) {
+      request.send(serializedData);
     } else {
       request.send();
     }
