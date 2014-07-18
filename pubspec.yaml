@@ -9,6 +9,5 @@ dependencies:
   logging: '>=0.5.13'
 dev_dependencies:
   browser: any
-  js: any
   logging_handlers: '>=0.5.0'
   unittest: any
