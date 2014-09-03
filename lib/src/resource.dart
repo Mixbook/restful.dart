@@ -10,10 +10,10 @@ class Resource {
   final String url;
   final Format format;
   
-  UriHelper _uri;
+  Uri _uri;
   
   Resource({this.url, this.format}) {
-    _uri = new UriHelper.from(url);
+    _uri = Uri.parse(url);
   }
   
   Future create([Map<String, Object> params]) {
@@ -26,12 +26,14 @@ class Resource {
   }
   
   Future delete(Object id) {
-    var uri = _uri.append(id.toString()).toString();
+    var path = _uri.pathSegments.toList()..add(id.toString());
+    var uri = _uri.replace(pathSegments: path).toString();
     return request('delete', uri);
   }
   
   Future find(Object id) {
-    var uri = _uri.append(id.toString()).toString();
+    var path = _uri.pathSegments.toList()..add(id.toString());
+    var uri = _uri.replace(pathSegments: path).toString();
     return request('get', uri);
   }
   
@@ -40,17 +42,20 @@ class Resource {
   }
   
   Future query(Map<String, Object> params) {
-    var uri = _uri.replaceParams(params).toString();
+    var queryParams = new Map.from(_uri.queryParameters)..addAll(params);
+    var uri = _uri.replace(queryParameters: queryParams).toString();
     return request('get', uri);
   }
   
   Future save(Object id, Map<String, Object> params) {
-    var uri = _uri.append(id).toString();
+    var path = _uri.pathSegments.toList()..add(id.toString());
+    var uri = _uri.replace(pathSegments: path).toString();
     return request('put', uri, params);
   }
   
   Resource nest(Object id, String resource) {
-    var uri = _uri.appendEach([id, resource]).toString();
+    var path = _uri.pathSegments.toList()..addAll([id.toString(), resource]);
+    var uri = _uri.replace(pathSegments: path).toString();
     return new Resource(url: uri, format: format);
   }
   

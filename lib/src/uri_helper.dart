@@ -1,9 +1,11 @@
 library restful.uri_helper;
 
+@deprecated
 class UriHelper extends Uri {
   
-  UriHelper({String scheme, String host, int port, List<String> pathSegments, Map<String, String> queryParams, String fragment}) : 
-    super(scheme: scheme, host: host, port: port, pathSegments: pathSegments, queryParameters: queryParams, fragment: fragment);
+  factory UriHelper({String scheme, String host, int port, List<String> pathSegments, Map<String, String> queryParams, String fragment}) {
+    return null;
+  }
   
   factory UriHelper.from(String uri) {
     var parsed = Uri.parse(uri);
