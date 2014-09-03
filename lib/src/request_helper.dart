@@ -37,7 +37,7 @@ class RequestHelper {
     if (method != 'get') {
       request.setRequestHeader('Content-Type', format.contentType);
     }
-
+    request.setRequestHeader('Accept', format.contentType);
     request.onLoad.listen((event) {
       if ((request.status >= 200 && request.status < 300) || request.status == 0) {
         completer.complete(request);
