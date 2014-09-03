@@ -2,7 +2,6 @@ library restful.rest_api;
 
 import 'package:restful/src/formats.dart';
 import 'package:restful/src/resource.dart';
-import 'package:restful/src/uri_helper.dart';
 
 class RestApi {
   final String apiUri;

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:html';
 import 'package:restful/src/request_helper.dart';
 import 'package:restful/src/formats.dart';
-import 'package:restful/src/uri_helper.dart';
 
 class Resource {
   final String url;
@@ -41,7 +40,7 @@ class Resource {
     return request('get', url);
   }
   
-  Future query(Map<String, Object> params) {
+  Future query(Map<String, String> params) {
     var queryParams = new Map.from(_uri.queryParameters)..addAll(params);
     var uri = _uri.replace(queryParameters: queryParams).toString();
     return request('get', uri);
