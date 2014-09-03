@@ -2,7 +2,7 @@ library restful.tests.request_mock;
 
 import 'dart:async';
 import 'dart:html';
-import 'package:unittest/mock.dart';
+import 'package:mock/mock.dart';
 
 class HttpRequestMock extends Mock implements HttpRequest {
   

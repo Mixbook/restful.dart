@@ -10,4 +10,5 @@ dependencies:
 dev_dependencies:
   browser: any
   logging_handlers: '>=0.5.0'
-  unittest: any
+  mock: '>=0.11.0'
+  unittest: '>0.11.0'

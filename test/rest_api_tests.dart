@@ -14,7 +14,7 @@ void testRestApi() {
 
     test("should append resource name", () {
       var resource = restApi.resource('users');
-      expect(resource.url, equals("http://www.example.com/users"));
+      expect(resource.url, equals(Uri.parse("http://www.example.com").replace(path: "users").toString()));
     });
   });
 }

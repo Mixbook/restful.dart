@@ -2,7 +2,6 @@ library restful.rest_api;
 
 import 'package:restful/src/formats.dart';
 import 'package:restful/src/resource.dart';
-import 'package:restful/src/uri_helper.dart';
 
 class RestApi {
   final String apiUri;
@@ -11,7 +10,9 @@ class RestApi {
   RestApi({this.apiUri, this.format});
   
   Resource resource(String name) {
-    var uri = new UriHelper.from(apiUri).appendEach(name.split("/")).toString();
-    return new Resource(url: uri, format: format);
+    var uri = Uri.parse(apiUri);
+    var path = uri.pathSegments.toList()..addAll(name.split("/"));
+    uri = uri.replace(pathSegments: path);
+    return new Resource(url: uri.toString(), format: format);
   }
 }
