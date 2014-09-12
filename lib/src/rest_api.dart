@@ -12,7 +12,7 @@ class RestApi {
   Resource resource(String name) {
     var uri = Uri.parse(apiUri);
     var path = uri.pathSegments.toList()..addAll(name.split("/"));
-    uri = uri.replace(pathSegments: path);
+    uri = uri.replace(pathSegments: path, port: uri.port);
     return new Resource(url: uri.toString(), format: format);
   }
 }
