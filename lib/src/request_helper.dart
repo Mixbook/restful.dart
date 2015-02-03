@@ -46,7 +46,20 @@ class RequestHelper {
         completer.completeError(new RequestFault(method, url, serializedData, request));
       }
     });
-    request.onError.listen((event) => completer.completeError(new RequestFault(method, url, serializedData, request)));
+
+    request.onError.listen((event) {
+      _logger.warning(
+'''Failed to load '${method.toUpperCase()} $url (${request.statusText})'
+
+Request Payload:
+$serializedData
+
+Response:
+${request.responseText}
+'''
+      );
+      completer.completeError(new RequestFault(method, url, serializedData, request));
+    });
 
     if (serializedData != null) {
       request.send(serializedData);
