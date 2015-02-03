@@ -42,22 +42,11 @@ class RequestHelper {
       if ((request.status >= 200 && request.status < 300) || request.status == 0) {
         completer.complete(request);
       } else {
-        _logger.warning("Unhandled HTTP status code ${request.status} for $url");
         completer.completeError(new RequestFault(method, url, serializedData, request));
       }
     });
 
     request.onError.listen((event) {
-      _logger.warning(
-'''Failed to load '${method.toUpperCase()} $url (${request.statusText})'
-
-Request Payload:
-$serializedData
-
-Response:
-${request.responseText}
-'''
-      );
       completer.completeError(new RequestFault(method, url, serializedData, request));
     });
 
@@ -67,9 +56,27 @@ ${request.responseText}
       request.send();
     }
 
-    return completer.future;
+    return completer.future.catchError((RequestFault fault) {
+      _logRequestFailure(fault);
+      throw fault;
+    });
   }
 
+}
+
+void _logRequestFailure(RequestFault fault) {
+  _logger.warning(
+      '''Failed to load '${fault.method.toUpperCase()} ${fault.url}'
+
+Status Code: ${fault.request.status}
+
+Request Payload:
+${fault.data}
+
+Response:
+${fault.request.responseText}
+'''
+  );
 }
 
 Logger _logger = new Logger("restful.request_helper");
